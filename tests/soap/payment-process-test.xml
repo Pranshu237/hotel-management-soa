@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:pay="http://hotel.com/soap/payment">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <pay:ProcessPaymentRequest>
+            <pay:bookingId>1</pay:bookingId>
+            <pay:customerId>1</pay:customerId>
+            <pay:amount>5000.00</pay:amount>
+            <pay:paymentMode>UPI</pay:paymentMode>
+        </pay:ProcessPaymentRequest>
+    </soapenv:Body>
+</soapenv:Envelope>

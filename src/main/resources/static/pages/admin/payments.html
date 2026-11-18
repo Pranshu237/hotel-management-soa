@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments Ledger - Grand Hotel SOA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand"><i class="bi bi-building-fill-check"></i> GRAND HOTEL SOA</div>
+            <ul class="sidebar-nav">
+                <li><a href="/pages/admin/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                <li><a href="/pages/admin/rooms.html"><i class="bi bi-door-closed"></i> Rooms Management</a></li>
+                <li><a href="/pages/admin/customers.html"><i class="bi bi-people"></i> Customers (SOAP/REST)</a></li>
+                <li><a href="/pages/admin/bookings.html"><i class="bi bi-calendar2-check"></i> Bookings & Stays</a></li>
+                <li><a href="/pages/admin/payments.html" class="active"><i class="bi bi-cash-coin"></i> Payments (SOAP)</a></li>
+                <li><a href="/pages/admin/checkin-checkout.html"><i class="bi bi-box-arrow-in-right"></i> Check-In / Out</a></li>
+                <li><a href="/pages/admin/housekeeping.html"><i class="bi bi-bucket"></i> Housekeeping</a></li>
+                <li><a href="/pages/admin/notifications.html"><i class="bi bi-bell"></i> Notifications</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="/index.html" class="text-white small text-decoration-none d-block mb-1"><i class="bi bi-globe me-1"></i> Public Website</a>
+                <a href="#" onclick="logout()" class="text-danger small text-decoration-none"><i class="bi bi-box-arrow-left me-1"></i> Sign Out</a>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <h4 class="fw-bold mb-0 text-dark">Payment Transactions & Financial Ledger</h4>
+                <a href="/ws/payments.wsdl" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-file-earmark-code me-1"></i> View Payments WSDL
+                </a>
+            </header>
+
+            <div class="admin-content">
+                <div class="hotel-card">
+                    <div class="card-header">
+                        <span><i class="bi bi-credit-card-2-back-fill text-warning me-2"></i> SOAP Processed Transactions</span>
+                        <span class="badge bg-success">SOAP 1.1 XML Protocol Integration</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Txn ID</th>
+                                        <th>Receipt No</th>
+                                        <th>Booking Code</th>
+                                        <th>Customer</th>
+                                        <th>Mode</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsTableBody">
+                                    <tr><td colspan="8" class="text-center py-4 text-muted">Loading transactions...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        async function loadPaymentsTable() {
+            const tbody = document.getElementById('paymentsTableBody');
+            try {
+                const list = await getPayments();
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No payment records logged yet.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = list.map(p => `
+                    <tr>
+                        <td class="font-monospace fw-bold text-primary">${p.transactionId}</td>
+                        <td class="font-monospace text-secondary">${p.receiptNumber || 'N/A'}</td>
+                        <td>${p.booking ? p.booking.bookingId : 'N/A'}</td>
+                        <td>${p.customer ? p.customer.name : 'Guest'}</td>
+                        <td><span class="badge bg-light text-dark border">${p.paymentMode}</span></td>
+                        <td class="fw-bold text-success">₹${p.amount}</td>
+                        <td><span class="badge bg-success">${p.status}</span></td>
+                        <td><small class="text-muted">${p.paymentDate ? new Date(p.paymentDate).toLocaleString() : 'Recent'}</small></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Error loading payments: ${err.message}</td></tr>`;
+            }
+        }
+        loadPaymentsTable();
+    </script>
+</body>
+</html>

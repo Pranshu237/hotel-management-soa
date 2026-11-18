@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:cus="http://hotel.com/soap/customer">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <cus:GetCustomerDetailsRequest>
+            <cus:customerId>1</cus:customerId>
+        </cus:GetCustomerDetailsRequest>
+    </soapenv:Body>
+</soapenv:Envelope>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway (SOAP) - Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg hotel-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/index.html"><i class="bi bi-building-fill-check"></i> GRAND HOTEL</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/pages/search-rooms.html">Find Rooms</a></li>
+                </ul>
+                <div id="user-badge" class="d-flex align-items-center text-white"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="hotel-card">
+                    <div class="card-header">
+                        <span><i class="bi bi-credit-card-2-front-fill text-warning me-2"></i> Payment Processing Gateway</span>
+                        <span class="badge bg-primary">SOAP 1.1 XML Protocol</span>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="alert alert-secondary small mb-4">
+                            <strong><i class="bi bi-info-circle me-1"></i> Technical Note:</strong> This transaction is executed using a live <strong>SOAP 1.1 XML Web Service</strong> at <code>/ws</code>. WSDL contract: <a href="/ws/payments.wsdl" target="_blank" class="fw-bold">/ws/payments.wsdl</a>. Simulated academic payment gateway without sensitive financial data.
+                        </div>
+
+                        <form id="paymentForm">
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Internal Booking ID</label>
+                                    <input type="number" class="form-control" id="bookingId" required readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Customer ID</label>
+                                    <input type="number" class="form-control" id="customerId" required readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Payable Amount (₹)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text fw-bold">₹</span>
+                                        <input type="number" step="0.01" class="form-control" id="amount" required readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Payment Method</label>
+                                    <select class="form-select" id="paymentMode" required>
+                                        <option value="UPI">UPI / Instant QR</option>
+                                        <option value="CARD" selected>Credit / Debit Card</option>
+                                        <option value="CASH">Cash at Front Desk</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-hotel-gold w-100 py-3 fs-5" id="payBtn">
+                                <i class="bi bi-shield-check me-2"></i> Process Payment (SOAP Request)
+                            </button>
+                        </form>
+
+                        <!-- Payment Success / Receipt Card -->
+                        <div id="receiptBox" class="mt-4 d-none p-4 bg-white border border-success rounded shadow-sm">
+                            <div class="text-center text-success mb-3">
+                                <i class="bi bi-patch-check-fill" style="font-size: 3.5rem;"></i>
+                                <h4 class="fw-bold mt-2">Payment Confirmed!</h4>
+                                <p class="text-muted small">Your booking is active and registered in the hotel management system.</p>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered small">
+                                    <tbody>
+                                        <tr>
+                                            <th class="w-50 bg-light">Transaction ID (SOAP Generated)</th>
+                                            <td id="receiptTxn" class="fw-bold text-primary font-monospace"></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bg-light">Receipt Number</th>
+                                            <td id="receiptNo" class="fw-bold font-monospace"></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bg-light">Status</th>
+                                            <td><span id="receiptStatus" class="badge bg-success">SUCCESS</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bg-light">Booking Reference</th>
+                                            <td id="receiptBookingId"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                                    <i class="bi bi-printer me-1"></i> Print Receipt
+                                </button>
+                                <a href="/pages/my-bookings.html" class="btn btn-hotel-primary btn-sm">
+                                    View in My Bookings →
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('bookingId').value = params.get('bookingId') || 1;
+        document.getElementById('customerId').value = params.get('customerId') || 1;
+        document.getElementById('amount').value = params.get('amount') || 5000.00;
+
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('payBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Transmitting SOAP XML...`;
+
+            const bId = document.getElementById('bookingId').value;
+            const cId = document.getElementById('customerId').value;
+            const amt = document.getElementById('amount').value;
+            const mode = document.getElementById('paymentMode').value;
+
+            try {
+                const res = await processPaymentSOAP(parseInt(bId), parseInt(cId), parseFloat(amt), mode);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-shield-check me-2"></i> Process Payment (SOAP Request)`;
+
+                if (res.status === 'SUCCESS') {
+                    showToast('Payment processed successfully via SOAP!', 'success');
+                    document.getElementById('paymentForm').classList.add('d-none');
+                    document.getElementById('receiptBox').classList.remove('d-none');
+
+                    document.getElementById('receiptTxn').textContent = res.transactionId;
+                    document.getElementById('receiptNo').textContent = res.receiptNumber;
+                    document.getElementById('receiptStatus').textContent = res.status;
+                    document.getElementById('receiptBookingId').textContent = `Booking #${bId}`;
+                } else {
+                    showToast('Payment Error: ' + res.message, 'danger');
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-shield-check me-2"></i> Process Payment (SOAP Request)`;
+                showToast('Failed to invoke payment SOAP service: ' + err.message, 'danger');
+            }
+        });
+    </script>
+</body>
+</html>

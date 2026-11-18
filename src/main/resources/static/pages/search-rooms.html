@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Rooms - Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg hotel-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/index.html"><i class="bi bi-building-fill-check"></i> GRAND HOTEL</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/pages/search-rooms.html">Find Rooms</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/pages/my-bookings.html">My Bookings</a></li>
+                </ul>
+                <div id="user-badge" class="d-flex align-items-center text-white"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Search Filter Card -->
+        <div class="hotel-card mb-4">
+            <div class="card-header">
+                <span><i class="bi bi-search text-warning me-2"></i> Search Available Rooms</span>
+                <span class="badge bg-info">REST API JSON: /api/rooms/available</span>
+            </div>
+            <div class="card-body">
+                <form id="searchForm" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small">Check-In Date</label>
+                        <input type="date" class="form-control" id="checkIn" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small">Check-Out Date</label>
+                        <input type="date" class="form-control" id="checkOut" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-hotel-gold w-100 py-2">
+                            <i class="bi bi-calendar2-check me-2"></i> Check Availability
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Available Rooms Section -->
+        <h4 class="fw-bold mb-3" style="color: var(--navy)"><i class="bi bi-door-open me-2"></i>Available Accommodations</h4>
+        <div id="roomsContainer" class="row g-4">
+            <div class="col-12 text-center py-5 text-muted">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Loading available rooms...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        // Set default dates: tomorrow and day after tomorrow
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dayAfter = new Date(today);
+        dayAfter.setDate(dayAfter.getDate() + 3);
+
+        const checkInInput = document.getElementById('checkIn');
+        const checkOutInput = document.getElementById('checkOut');
+
+        checkInInput.value = tomorrow.toISOString().split('T')[0];
+        checkOutInput.value = dayAfter.toISOString().split('T')[0];
+
+        async function loadRoomsList() {
+            const container = document.getElementById('roomsContainer');
+            const cin = checkInInput.value;
+            const cout = checkOutInput.value;
+
+            try {
+                const rooms = await getAvailableRooms(cin, cout);
+                if (!rooms || rooms.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="bi bi-emoji-frown text-warning" style="font-size: 3rem;"></i>
+                            <h5 class="mt-3 text-muted">No rooms available for the selected dates.</h5>
+                            <p class="text-muted">Please adjust your check-in or check-out dates and try again.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = rooms.map(r => `
+                    <div class="col-md-4">
+                        <div class="room-card">
+                            <div class="room-header">
+                                <span class="fw-bold"><i class="bi bi-hash"></i> Room ${r.roomNumber}</span>
+                                <span class="badge bg-light text-dark">${r.roomType ? r.roomType.name : 'Standard'}</span>
+                            </div>
+                            <div class="room-body">
+                                <h5 class="fw-bold text-dark">${r.roomType ? r.roomType.name : 'Luxury Room'}</h5>
+                                <p class="text-muted small">${r.roomType && r.roomType.description ? r.roomType.description : 'Elegantly furnished with plush bedding, climate control, and modern amenities.'}</p>
+                                <div class="d-flex justify-content-between text-muted small my-3">
+                                    <span><i class="bi bi-people-fill text-primary"></i> Capacity: ${r.capacity} Guests</span>
+                                    <span><i class="bi bi-layers text-secondary"></i> Floor: ${r.floor}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                    <div>
+                                        <span class="text-muted small d-block">Price per night</span>
+                                        <span class="room-price">₹${r.price}</span>
+                                    </div>
+                                    <a href="/pages/booking.html?roomId=${r.id}&roomNo=${r.roomNumber}&price=${r.price}&checkIn=${cin}&checkOut=${cout}" class="btn btn-hotel-primary">
+                                        Book Now <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5 text-danger">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 2rem;"></i>
+                        <p class="mt-2">Failed to load rooms: ${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            loadRoomsList();
+        });
+
+        // Initial load
+        loadRoomsList();
+    </script>
+</body>
+</html>

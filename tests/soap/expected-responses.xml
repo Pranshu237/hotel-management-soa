@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sample Expected Responses from SOAP 1.1 Web Services -->
+<SampleResponses>
+
+    <!-- 1. Expected Response for RegisterCustomerRequest -->
+    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP-ENV:Header/>
+        <SOAP-ENV:Body>
+            <ns2:RegisterCustomerResponse xmlns:ns2="http://hotel.com/soap/customer">
+                <ns2:customerId>101</ns2:customerId>
+                <ns2:status>SUCCESS</ns2:status>
+                <ns2:message>Customer registered successfully</ns2:message>
+            </ns2:RegisterCustomerResponse>
+        </SOAP-ENV:Body>
+    </SOAP-ENV:Envelope>
+
+    <!-- 2. Expected Response for GetCustomerDetailsRequest -->
+    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP-ENV:Header/>
+        <SOAP-ENV:Body>
+            <ns2:GetCustomerDetailsResponse xmlns:ns2="http://hotel.com/soap/customer">
+                <ns2:customerId>101</ns2:customerId>
+                <ns2:name>Rahul Sharma</ns2:name>
+                <ns2:email>rahul@gmail.com</ns2:email>
+                <ns2:phone>9876543210</ns2:phone>
+                <ns2:address>Chennai, Tamil Nadu, India</ns2:address>
+                <ns2:status>SUCCESS</ns2:status>
+                <ns2:message>Customer details retrieved successfully</ns2:message>
+            </ns2:GetCustomerDetailsResponse>
+        </SOAP-ENV:Body>
+    </SOAP-ENV:Envelope>
+
+    <!-- 3. Expected Response for ProcessPaymentRequest -->
+    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP-ENV:Header/>
+        <SOAP-ENV:Body>
+            <ns2:ProcessPaymentResponse xmlns:ns2="http://hotel.com/soap/payment">
+                <ns2:transactionId>TXN1700000001</ns2:transactionId>
+                <ns2:status>SUCCESS</ns2:status>
+                <ns2:message>Payment processed successfully</ns2:message>
+                <ns2:receiptNumber>REC1700000001</ns2:receiptNumber>
+            </ns2:ProcessPaymentResponse>
+        </SOAP-ENV:Body>
+    </SOAP-ENV:Envelope>
+
+    <!-- 4. Expected Response for GetPaymentDetailsRequest -->
+    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP-ENV:Header/>
+        <SOAP-ENV:Body>
+            <ns2:GetPaymentDetailsResponse xmlns:ns2="http://hotel.com/soap/payment">
+                <ns2:transactionId>TXN1700000001</ns2:transactionId>
+                <ns2:bookingId>501</ns2:bookingId>
+                <ns2:customerId>101</ns2:customerId>
+                <ns2:amount>5000.0</ns2:amount>
+                <ns2:paymentMode>UPI</ns2:paymentMode>
+                <ns2:status>SUCCESS</ns2:status>
+                <ns2:receiptNumber>REC1700000001</ns2:receiptNumber>
+                <ns2:paymentDate>2026-11-17T22:30:00</ns2:paymentDate>
+                <ns2:message>Payment details retrieved successfully</ns2:message>
+            </ns2:GetPaymentDetailsResponse>
+        </SOAP-ENV:Body>
+    </SOAP-ENV:Envelope>
+
+</SampleResponses>

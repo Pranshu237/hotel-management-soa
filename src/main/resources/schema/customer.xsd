@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://hotel.com/soap/customer"
+           xmlns:tns="http://hotel.com/soap/customer"
+           elementFormDefault="qualified">
+
+    <!-- Register Customer Request -->
+    <xs:element name="RegisterCustomerRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+                <xs:element name="phone" type="xs:string"/>
+                <xs:element name="address" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Register Customer Response -->
+    <xs:element name="RegisterCustomerResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="customerId" type="xs:long"/>
+                <xs:element name="status" type="xs:string"/>
+                <xs:element name="message" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Customer Details Request -->
+    <xs:element name="GetCustomerDetailsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="customerId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Customer Details Response -->
+    <xs:element name="GetCustomerDetailsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="customerId" type="xs:long"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+                <xs:element name="phone" type="xs:string"/>
+                <xs:element name="address" type="xs:string"/>
+                <xs:element name="status" type="xs:string"/>
+                <xs:element name="message" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

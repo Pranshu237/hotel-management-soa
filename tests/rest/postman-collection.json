@@ -1,0 +1,190 @@
+{
+  "info": {
+    "_postman_id": "a9b8c7d6-e5f4-4321-beef-1234567890ab",
+    "name": "Smart Hotel Management System (SOA) - REST APIs",
+    "description": "Comprehensive Postman collection for all REST endpoints in the Hotel Management SOA project.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"guest_user\",\n  \"password\": \"pass123\",\n  \"email\": \"guest@hotel.com\",\n  \"role\": \"CUSTOMER\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "register"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Room Management",
+      "item": [
+        {
+          "name": "Get All Rooms",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/rooms", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "rooms"] }
+          }
+        },
+        {
+          "name": "Get Available Rooms for Dates",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/rooms/available?checkIn=2026-12-01&checkOut=2026-12-03",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "rooms", "available"],
+              "query": [
+                { "key": "checkIn", "value": "2026-12-01" },
+                { "key": "checkOut", "value": "2026-12-03" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Room",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"401\",\n  \"roomTypeId\": 3,\n  \"price\": 4500.00,\n  \"capacity\": 2,\n  \"floor\": 4\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/rooms", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "rooms"] }
+          }
+        },
+        {
+          "name": "Get Room Types",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/rooms/types", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "rooms", "types"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Booking Service",
+      "item": [
+        {
+          "name": "Create Reservation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"roomId\": 1,\n  \"checkInDate\": \"2026-12-01\",\n  \"checkOutDate\": \"2026-12-03\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/bookings", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "bookings"] }
+          }
+        },
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/bookings", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "bookings"] }
+          }
+        },
+        {
+          "name": "Get Bookings By Customer",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/bookings/customer/1", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "bookings", "customer", "1"] }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "http://localhost:8080/api/bookings/1/cancel", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "bookings", "1", "cancel"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Check-In & Check-Out",
+      "item": [
+        {
+          "name": "Check-In Guest",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receptionistName\": \"Priya Sharma\",\n  \"remarks\": \"Passport checked. Room key issued.\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/checkin/1", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "checkin", "1"] }
+          }
+        },
+        {
+          "name": "Check-Out Guest",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receptionistName\": \"Priya Sharma\",\n  \"remarks\": \"Keys returned. Mini bar cleared.\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/checkout/1", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "checkout", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Housekeeping & Operations",
+      "item": [
+        {
+          "name": "Get Housekeeping Status",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/housekeeping", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "housekeeping"] }
+          }
+        },
+        {
+          "name": "Update Room Hygiene",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CLEAN\",\n  \"assignedTo\": \"Ramesh Kumar\",\n  \"notes\": \"Sanitization complete\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/housekeeping/1", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "housekeeping", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Customer Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/notifications/1", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "notifications", "1"] }
+          }
+        }
+      ]
+    }
+  ]
+}

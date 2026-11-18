@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Notifications - Grand Hotel SOA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand"><i class="bi bi-building-fill-check"></i> GRAND HOTEL SOA</div>
+            <ul class="sidebar-nav">
+                <li><a href="/pages/admin/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                <li><a href="/pages/admin/rooms.html"><i class="bi bi-door-closed"></i> Rooms Management</a></li>
+                <li><a href="/pages/admin/customers.html"><i class="bi bi-people"></i> Customers (SOAP/REST)</a></li>
+                <li><a href="/pages/admin/bookings.html"><i class="bi bi-calendar2-check"></i> Bookings & Stays</a></li>
+                <li><a href="/pages/admin/payments.html"><i class="bi bi-cash-coin"></i> Payments (SOAP)</a></li>
+                <li><a href="/pages/admin/checkin-checkout.html"><i class="bi bi-box-arrow-in-right"></i> Check-In / Out</a></li>
+                <li><a href="/pages/admin/housekeeping.html"><i class="bi bi-bucket"></i> Housekeeping</a></li>
+                <li><a href="/pages/admin/notifications.html" class="active"><i class="bi bi-bell"></i> Notifications</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="/index.html" class="text-white small text-decoration-none d-block mb-1"><i class="bi bi-globe me-1"></i> Public Website</a>
+                <a href="#" onclick="logout()" class="text-danger small text-decoration-none"><i class="bi bi-box-arrow-left me-1"></i> Sign Out</a>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <h4 class="fw-bold mb-0 text-dark">Customer Notification Service Dispatcher</h4>
+            </header>
+
+            <div class="admin-content">
+                <div class="hotel-card">
+                    <div class="card-header">
+                        <span><i class="bi bi-bell-fill text-warning me-2"></i> Event-Driven Notification Stream</span>
+                        <span class="badge bg-secondary">REST API: /api/notifications</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer</th>
+                                        <th>Event Type</th>
+                                        <th>Message Body</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="notificationsTbody">
+                                    <tr><td colspan="5" class="text-center py-4 text-muted">Loading notifications...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        async function loadNotificationsTable() {
+            const tbody = document.getElementById('notificationsTbody');
+            try {
+                const list = await getAllNotifications();
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No notifications generated yet.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = list.map(n => `
+                    <tr>
+                        <td class="text-muted small">#${n.id}</td>
+                        <td class="fw-bold">${n.customer ? n.customer.name : 'Guest'}</td>
+                        <td><span class="badge bg-primary">${n.type}</span></td>
+                        <td>${n.message}</td>
+                        <td><small class="text-muted">${n.createdAt ? new Date(n.createdAt).toLocaleString() : 'Recent'}</small></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Error loading notifications: ${err.message}</td></tr>`;
+            }
+        }
+        loadNotificationsTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://hotel.com/soap/payment"
+           xmlns:tns="http://hotel.com/soap/payment"
+           elementFormDefault="qualified">
+
+    <!-- Process Payment Request -->
+    <xs:element name="ProcessPaymentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="bookingId" type="xs:long"/>
+                <xs:element name="customerId" type="xs:long"/>
+                <xs:element name="amount" type="xs:double"/>
+                <xs:element name="paymentMode" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Process Payment Response -->
+    <xs:element name="ProcessPaymentResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="transactionId" type="xs:string"/>
+                <xs:element name="status" type="xs:string"/>
+                <xs:element name="message" type="xs:string"/>
+                <xs:element name="receiptNumber" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Payment Details Request -->
+    <xs:element name="GetPaymentDetailsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="transactionId" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Payment Details Response -->
+    <xs:element name="GetPaymentDetailsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="transactionId" type="xs:string"/>
+                <xs:element name="bookingId" type="xs:long"/>
+                <xs:element name="customerId" type="xs:long"/>
+                <xs:element name="amount" type="xs:double"/>
+                <xs:element name="paymentMode" type="xs:string"/>
+                <xs:element name="status" type="xs:string"/>
+                <xs:element name="receiptNumber" type="xs:string"/>
+                <xs:element name="paymentDate" type="xs:string"/>
+                <xs:element name="message" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

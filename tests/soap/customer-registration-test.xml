@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:cus="http://hotel.com/soap/customer">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <cus:RegisterCustomerRequest>
+            <cus:name>Rahul Sharma</cus:name>
+            <cus:email>rahul.sharma@example.com</cus:email>
+            <cus:phone>9876543210</cus:phone>
+            <cus:address>Chennai, Tamil Nadu, India</cus:address>
+        </cus:RegisterCustomerRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
